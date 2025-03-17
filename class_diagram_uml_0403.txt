@@ -1,0 +1,30 @@
+@startuml
+class Customer {
+    - customerId: int
+    - name: String
+    - email: String
+    - balance: double
+    + login(): boolean
+    + viewBalance(): double
+    + transferFunds(receiverId: int, amount: double): boolean
+}
+
+class Transaction {
+    - transactionId: int
+    - amount: double
+    - date: Date
+    - type: String
+    + processTransaction(): boolean
+}
+
+class BankAccount {
+    - accountNumber: int
+    - balance: double
+    + deposit(amount: double): void
+    + withdraw(amount: double): boolean
+}
+
+Customer --> BankAccount
+BankAccount --> Transaction
+@enduml
+

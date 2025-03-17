@@ -1,0 +1,179 @@
+ 1. Use Case Diagram:  
+
+plaintext
+@startuml
+actor Customer
+actor Admin
+actor BankServer
+
+rectangle OnlineBanking {
+    Customer --> (Login)
+    Customer --> (View Balance)
+    Customer --> (Transfer Funds)
+    Customer --> (Withdraw Money)
+    Customer --> (Deposit Money)
+    Customer --> (Logout)
+    
+    Admin --> (Manage Users)
+    Admin --> (Generate Reports)
+}
+@enduml
+
+
+ 2. Class Diagram:  
+plaintext
+@startuml
+class Customer {
+    - customerId: int
+    - name: String
+    - email: String
+    - balance: double
+    + login(): boolean
+    + viewBalance(): double
+    + transferFunds(receiverId: int, amount: double): boolean
+}
+
+class Transaction {
+    - transactionId: int
+    - amount: double
+    - date: Date
+    - type: String
+    + processTransaction(): boolean
+}
+
+class BankAccount {
+    - accountNumber: int
+    - balance: double
+    + deposit(amount: double): void
+    + withdraw(amount: double): boolean
+}
+
+Customer --> BankAccount
+BankAccount --> Transaction
+@enduml
+
+
+ 3. Sequence Diagram: 
+
+
+plaintext
+@startuml
+Customer -> BankServer: Login(username, password)
+BankServer -> Database: Validate Credentials
+Database -> BankServer: Success/Failure
+BankServer -> Customer: Login Successful
+
+Customer -> BankServer: Transfer Funds(receiver, amount)
+BankServer -> Database: Check Balance & Process
+Database -> BankServer: Transaction Success
+BankServer -> Customer: Confirmation Message
+@enduml
+
+
+ 4. Collaboration Diagram:  
+
+plaintext
+@startuml
+object Customer
+object BankServer
+object Database
+
+Customer -> BankServer: Login()
+BankServer -> Database: Check Credentials
+Database -> BankServer: Response()
+BankServer -> Customer: Login Success
+
+Customer -> BankServer: Transfer Funds()
+BankServer -> Database: Update Accounts
+Database -> BankServer: Success Message
+BankServer -> Customer: Confirmation
+@enduml
+
+
+ 5. State Chart Diagram : 
+
+plaintext
+@startuml
+[*] --> LoggedOut
+LoggedOut --> LoggedIn : Enter Credentials
+LoggedIn --> ViewingBalance : Click "View Balance"
+ViewingBalance --> LoggedIn : Back
+
+LoggedIn --> TransferringFunds : Enter Transfer Details
+TransferringFunds --> TransactionSuccess : If Sufficient Funds
+TransactionSuccess --> LoggedIn : Confirmation
+
+LoggedIn --> LoggedOut : Logout
+@enduml
+
+
+ 6. Activity Diagram:
+
+plaintext
+@startuml
+start
+:User Logs In;
+if (Valid Credentials?) then (Yes)
+    :Show Dashboard;
+    :User Selects Action;
+    switch (Action)
+    case (View Balance)
+        :Show Balance;
+    case (Transfer Money)
+        :Enter Details;
+        if (Sufficient Funds?) then (Yes)
+            :Process Transaction;
+        else (No)
+            :Show Error;
+        endif
+    case (Logout)
+        :End Session;
+    endswitch
+else (No)
+    :Show Login Error;
+endif
+stop
+@enduml
+
+
+ 7. Component Diagram:  
+
+plaintext
+@startuml
+component "User Interface" {
+    [Login Page]
+    [Dashboard]
+}
+
+component "Bank Server" {
+    [Transaction Processing]
+    [Authentication]
+}
+
+component "Database" {
+    [User Data]
+    [Transaction Records]
+}
+
+[Login Page] --> [Authentication]
+[Dashboard] --> [Transaction Processing]
+[Transaction Processing] --> [Database]
+@enduml
+
+
+ 8. Deployment Diagram : 
+
+plaintext
+@startuml
+node "Client" {
+    component "Web Browser"
+}
+
+node "Server" {
+    component "Application Server"
+    component "Database Server"
+}
+
+"Web Browser" --> "Application Server"
+"Application Server" --> "Database Server"
+@enduml
